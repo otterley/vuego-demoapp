@@ -37,8 +37,8 @@ func main() {
 		weatherAPIKey = envValue
 	}
 
-	if len(os.Getenv("AUTH_CLIENT_ID")) > 0 {
-		fmt.Printf("### 🔐 Azure AD configured with client id: %s\n", os.Getenv("AUTH_CLIENT_ID"))
+	if len(os.Getenv("COGNITO_IDENTITY_POOL_ID")) > 0 {
+		fmt.Printf("### 🔐 Using Cognito Identity Pool ID %s\n", os.Getenv("COGNITO_IDENTITY_POOL_ID"))
 	}
 
 	// Routing using mux

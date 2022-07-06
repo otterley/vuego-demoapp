@@ -33,9 +33,8 @@ let config = {
 // App start up synchronized using await with the config API call
 //
 async function startup(app) {
-  // Take Azure AD client-id from .env.development or .env.development.local if it's set
   // Fall back to empty string which disables the auth feature
-  let AUTH_CLIENT_ID = process.env.VUE_APP_AUTH_CLIENT_ID || ''
+  let AUTH_CLIENT_ID = ''
 
   // Load config at runtime from special `/config` endpoint on Go server backend
   const apiEndpoint = process.env.VUE_APP_API_ENDPOINT || '/api'
@@ -52,6 +51,7 @@ async function startup(app) {
 
   // Setup auth helper but disable dummy user
   // if AUTH_CLIENT_ID isn't set at this point, then the user sign-in will be dynamically disabled
+  // Disabled
   auth.configure(AUTH_CLIENT_ID, false)
 
   app.mount('#app')

@@ -7,7 +7,7 @@
 //   Updated 2021 - Switched to @azure/msal-browser
 // ----------------------------------------------------------------------------
 
-import * as msal from '@azure/msal-browser'
+// import * as msal from '@azure/msal-browser'
 
 // MSAL object used for signing in users with MS identity platform
 let msalApp
@@ -25,7 +25,7 @@ export default {
     // If no clientId provided & enableDummyUser then create a mock MSAL UserAgentApplication
     // Allows us to run without Azure AD for demos & local dev
     if (!clientId && enableDummyUser) {
-      console.log('### Azure AD sign-in: disabled. Will run in demo mode with dummy demo@example.net account')
+      console.log('### Cognito sign-in: disabled. Will run in demo mode with dummy demo@example.net account')
 
       const dummyUser = {
         accountIdentifier: 'e11d4d0c-1c70-430d-a644-aed03a60e059',
@@ -68,35 +68,6 @@ export default {
       }
       return
     }
-
-    // Can't configure if clientId blank/null/undefined
-    if (!clientId) {
-      return
-    }
-
-    const config = {
-      auth: {
-        clientId: clientId,
-        redirectUri: window.location.origin,
-        authority: 'https://login.microsoftonline.com/common'
-      },
-      cache: {
-        cacheLocation: 'localStorage'
-      }
-      // Only uncomment when you *really* need to debug what is going on in MSAL
-      /* system: {
-        logger: new msal.Logger(
-          (logLevel, msg) => { console.log(msg) },
-          {
-            level: msal.LogLevel.Verbose
-          }
-        )
-      } */
-    }
-    console.log('### Azure AD sign-in: enabled\n', config)
-
-    // Create our shared/static MSAL app object
-    msalApp = new msal.PublicClientApplication(config)
   },
 
   //

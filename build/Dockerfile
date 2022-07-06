@@ -5,6 +5,8 @@ FROM node:16-alpine AS vue-build
 WORKDIR /build
 
 COPY frontend/package*.json ./
+
+RUN apk update && apk add python3 make gcc g++
 RUN npm i -g npm
 RUN npm install --silent
 
@@ -25,7 +27,7 @@ COPY server/pkg ./pkg/
 COPY server/go.mod ./
 COPY server/go.sum ./
 
-ENV GO111MODULE=on
+ENV GO111MODULE=on GOPROXY=direct
 # Disabling cgo results in a fully static binary that can run without C libs
 RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd
 

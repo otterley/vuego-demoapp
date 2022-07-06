@@ -2,6 +2,7 @@
 Home page
 ----------------------------------------------
 Ben C, April 2018, Updated for Vue3 2021
+Michael Fischer, July 2022, Updated for AWS
 -->
 
 <template>
@@ -10,7 +11,7 @@ Ben C, April 2018, Updated for Vue3 2021
       <h1 class="display-6 fw-bold">Go &amp; Vue.js Demo</h1>
       <p class="col-md-12 fs-5 text-white">
         This is a standard modern web application with a Go RESTful backend and a Vue.js single page application frontend. It has been designed with
-        cloud demos &amp; containers in mind. Demonstrating capabilities such as deployment to Azure or Kubernetes, auto scaling, or anytime you want
+        cloud demos &amp; containers in mind. Demonstrating capabilities such as deployment to AWS or Kubernetes, auto scaling, or anytime you want
         something quick and lightweight to run & deploy.
       </p>
 
@@ -19,7 +20,7 @@ Ben C, April 2018, Updated for Vue3 2021
         <li>System status / information view</li>
         <li>Geolocated weather info (from OpenWeather API)</li>
         <li>Realtime monitoring and metrics</li>
-        <li>Support for user authentication with Azure AD</li>
+        <li>Support for user authentication with Amazon Cognito</li>
       </ul>
 
       <div class="row justify-content-between">
@@ -35,7 +36,7 @@ Ben C, April 2018, Updated for Vue3 2021
         </div>
         <div class="col-md align-self-center">
           <img class="icon mb-2" src="../assets/go.svg" />
-          <a class="btn btn-primary btn-lg" target="_blank" href="https://azure.microsoft.com/en-gb/develop/go/">Get started</a>
+          <a class="btn btn-primary btn-lg" target="_blank" href="https://aws.amazon.com/sdk-for-go/">Get started</a>
         </div>
       </div>
 

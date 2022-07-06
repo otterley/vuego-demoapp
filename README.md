@@ -4,7 +4,7 @@ This is a simple web application with a Go server/backend and a Vue.js SPA (Sing
 
 The app has been designed with cloud native demos & containers in mind, in order to provide a real working application for deployment, something more than "hello-world" but with the minimum of pre-reqs. It is not intended as a complete example of a fully functioning architecture or complex software design.
 
-Typical uses would be deployment to Kubernetes, demos of Docker, CI/CD (build pipelines are provided), deployment to cloud (Azure) monitoring, auto-scaling
+Typical uses would be deployment to Kubernetes, demos of Docker, CI/CD (build pipelines are provided), deployment to cloud (AWS) monitoring, auto-scaling
 
 - The Frontend is a SPA written in Vue.js 3. It uses [Bootstrap 5](https://getbootstrap.com/) and [Font Awesome](https://fontawesome.com/). In addition [Gauge.js](http://bernii.github.io/gauge.js/) is used for the dials in the monitoring view
 - The Go component is a Go HTTP server based on the std http package and using [gopsutils](https://github.com/shirou/gopsutil) for monitoring metrics, and [Gorilla Mux](https://github.com/gorilla/mux) for routing
@@ -14,7 +14,7 @@ Features:
 - System status / information view
 - Geolocated weather info (from OpenWeather API)
 - Realtime monitoring and metric view
-- Support for user authentication with Azure AD and MSAL
+- (Coming soon) Support for user authentication with Cognito
 - Prometheus metrics
 - API for generating CPU load, and allocating memory
 
@@ -38,7 +38,7 @@ Live instance:
 ├── frontend         Root of the Vue.js project
 │   └── src          Vue.js source code
 │   └── tests        Unit tests
-├── deploy           Supporting files for Azure deployment etc
+├── deploy           Supporting files for AWS deployment etc
 │   └── kubernetes   Instructions for Kubernetes deployment with Helm
 ├── server           Go backend server
 │   └── cmd          Server main / exec
@@ -74,7 +74,7 @@ In addition to these application specific endpoints, the following REST operatio
 - [Node.js](https://nodejs.org/en/) [Go 1.16+](https://golang.org/doc/install) - for running locally, linting, running tests etc
 - [cosmtrek/air](https://github.com/cosmtrek/air#go) - if using `make watch-server`
 - [Docker](https://docs.docker.com/get-docker/) - for running as a container, or image build and push
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) - for deployment to Azure
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) - for deployment to AWS
 
 Clone the project to any directory where you do development work
 
@@ -96,24 +96,25 @@ run                  🏃 Run BOTH components locally using Vue CLI and Go serve
 watch-server         👀 Run API server with hot reload file watcher, needs cosmtrek/air
 watch-frontend       👀 Run frontend with hot reload file watcher
 build-frontend       🧰 Build and bundle the frontend into dist
-deploy               🚀 Deploy to Azure Container Apps
-undeploy             💀 Remove from Azure
+deploy               🚀 Deploy to Amazon ECS
+undeploy             💀 Remove from AWS
 test                 🎯 Unit tests for server and frontend
-test-report          🎯 Unit tests for server and frontend (with report output)
+test-report          📜 Unit tests for server and frontend with report
 test-snapshot        📷 Update snapshots for frontend tests
-test-api             🚦  Run integration API tests, server must be running
+test-api             🚦 Run integration API tests, server must be running
 clean                🧹 Clean up project
 ```
 
 Make file variables and default values, pass these in when calling `make`, e.g. `make image IMAGE_REPO=blah/foo`
 
-| Makefile Variable | Default               |
-| ----------------- | --------------------- |
-| IMAGE_REG         | ghcr<span>.</span>io  |
-| IMAGE_REPO        | benc-uk/vuego-demoapp |
-| IMAGE_TAG         | latest                |
-| AZURE_RES_GROUP   | temp-demoapps         |
-| AZURE_REGION      | uksouth               |
+
+| Makefile Variable | Default                |
+| ----------------- | ---------------------- |
+| IMAGE_REG         | _none_                 |
+| IMAGE_REPO        | vuego-demoapp           |
+| IMAGE_TAG         | latest                 |
+| AWS_STACK_NAME    | vuego-demoapp           |
+| AWS_REGION        | us-west-2              |
 
 - The server will listen on port 4000 by default, change this by setting the environmental variable `PORT`
 - The server will ry to serve static content (i.e. bundled frontend) from the same directory as the server binary, change this by setting the environmental variable `CONTENT_DIR`
@@ -135,11 +136,9 @@ Should you want to build your own container, use `make image` and the above vari
 
 The app can easily be deployed to Kubernetes using Helm, see [deploy/kubernetes/readme.md](deploy/kubernetes/readme.md) for details
 
-## Running in Azure App Service (Linux)
+## Running in Amazon ECS (Linux)
 
-If you want to deploy to an Azure Web App as a container (aka Linux Web App), a Bicep template is provided in the [deploy](deploy/) directory
-
-For a super quick deployment, use `make deploy` which will deploy to a resource group, temp-demoapps and use the git ref to create a unique site name
+For a super quick deployment, use `make deploy` which will deploy via an AWS CloudFormation stack.
 
 ```bash
 make deploy
@@ -152,17 +151,11 @@ Environmental variables
 - `WEATHER_API_KEY` - Enable the weather feature with a OpenWeather API key
 - `PORT` - Port to listen on (default: `4000`)
 - `CONTENT_DIR` - Directory to serve static content from (default: `.`)
-- `AUTH_CLIENT_ID` - Set to a Azure AD registered app if you wish to enable the optional user sign-in feature
+- `COGNITO_IDENTITY_POOL_ID` - (TODO) Set to a Amazon Cognito Identity Pool ID if you wish to enable the optional user sign-in feature
 
-### Optional User Sign-In Feature
+### User Authentication with Amazon Cognito
 
-The application can be configured with an optional user sign-in feature which uses Azure Active Directory as an identity platform. This uses wrapper & helper libraries from https://github.com/benc-uk/msal-graph-vue
-
-If you wish to enable this, carry out the following steps:
-
-- Register an application with Azure AD, [see these steps](https://github.com/benc-uk/msal-graph-vue#set-up--deployment)
-- Set the environmental variable `AUTH_CLIENT_ID` on the Go server, with the value of the client id. This can be done in the `.env` file if working locally.
-- _Optional_ when testing/debugging the Vue.js SPA without the Go server, you can place the client-id in `.env.development` under the value `VUE_APP_AUTH_CLIENT_ID`
+🚧 Coming soon.
 
 # GitHub Actions CI/CD
 
@@ -175,6 +168,7 @@ A set of GitHub Actions workflows are included for CI / CD. Automated builds for
 
 | When       | What                                                 |
 | ---------- | ---------------------------------------------------- |
+| Jul 2022   | Update for AWS (Michael Fischer)                     |
 | Nov 2021   | Rewrite for Vue.js 3, new look & feel, huge refactor |
 | Mar 2021   | Auth using MSAL.js v2 added                          |
 | Mar 2021   | Refresh, makefile, more tests                        |

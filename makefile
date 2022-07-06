@@ -1,12 +1,13 @@
 # Used by `image`, `push` & `deploy` targets, override as required
-IMAGE_REG ?= ghcr.io
-IMAGE_REPO ?= benc-uk/vuego-demoapp
+IMAGE_REG ?= 749049578452.dkr.ecr.us-west-2.amazonaws.com
+IMAGE_REPO ?= vuego-demoapp
 IMAGE_TAG ?= latest
 
-# Used by `deploy` target, sets Azure webap defaults, override as required
-AZURE_RES_GROUP ?= demoapps
-AZURE_REGION ?= northeurope
-AZURE_APP_NAME ?= vuego-demoapp
+# Used by `deploy` target, sets AWS deployment defaults, override as required
+AWS_REGION ?= us-west-2
+AWS_STACK_NAME ?= vuego-demoapp
+AWS_APP_NAME ?= vuego-demoapp
+
 
 # Used by `test-api` target
 TEST_HOST ?= localhost:4000
@@ -53,17 +54,15 @@ watch-frontend: $(FRONT_DIR)/node_modules ## 👀 Run frontend with hot reload f
 build-frontend: $(FRONT_DIR)/node_modules ## 🧰 Build and bundle the frontend into dist
 	cd $(FRONT_DIR); npm run build
 
-deploy: ## 🚀 Deploy to Azure Container Apps
-	az group create --resource-group $(AZURE_RES_GROUP) --location $(AZURE_REGION) -o table
-	az deployment group create --template-file deploy/container-app.bicep \
-		--resource-group $(AZURE_RES_GROUP) \
-		--parameters appName=$(AZURE_APP_NAME) \
-		--parameters image=$(IMAGE_REG)/$(IMAGE_REPO):$(IMAGE_TAG) -o table 
-	@echo "### 🚀 App deployed & available here: $(shell az deployment group show --resource-group vuego-demoapp --name container-app --query "properties.outputs.appURL.value" -o tsv)/"
+deploy: ## 🚀 Deploy to Amazon ECS
+	@echo "### 🚫 Not implemented yet"
+	@false
+#   @echo "### 🚀 App deployed & available here: ... "
 
-undeploy: ## 💀 Remove from Azure 
-	@echo "### WARNING! Going to delete $(AZURE_RES_GROUP) 😲"
-	az group delete -n $(AZURE_RES_GROUP) -o table --no-wait
+undeploy: ## 💀 Remove from AWS 
+	@echo "### 🚫 Not implemented yet"
+	@false
+#   @echo "### WARNING! Going to delete $(AWS_STACK_NAME) 😲"
 
 test: $(FRONT_DIR)/node_modules ## 🎯 Unit tests for server and frontend 
 	cd $(SERVER_DIR); go test -v ./...
