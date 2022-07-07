@@ -1,13 +1,13 @@
+# Used by `deploy` target, sets AWS deployment defaults, override as required
+AWS_ACCOUNT_ID ?= 523443631803
+AWS_REGION ?= us-west-2
+AWS_AVAILABILITY_ZONES ?= $(AWS_REGION)a,$(AWS_REGION)b
+AWS_STACK_NAME ?= vuego-demoapp
+
 # Used by `image`, `push` & `deploy` targets, override as required
-IMAGE_REG ?= 749049578452.dkr.ecr.us-west-2.amazonaws.com
+IMAGE_REG ?= $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
 IMAGE_REPO ?= vuego-demoapp
 IMAGE_TAG ?= latest
-
-# Used by `deploy` target, sets AWS deployment defaults, override as required
-AWS_REGION ?= us-west-2
-AWS_STACK_NAME ?= vuego-demoapp
-AWS_APP_NAME ?= vuego-demoapp
-
 
 # Used by `test-api` target
 TEST_HOST ?= localhost:4000
@@ -55,14 +55,20 @@ build-frontend: $(FRONT_DIR)/node_modules ## 🧰 Build and bundle the frontend 
 	cd $(FRONT_DIR); npm run build
 
 deploy: ## 🚀 Deploy to Amazon ECS
-	@echo "### 🚫 Not implemented yet"
-	@false
-#   @echo "### 🚀 App deployed & available here: ... "
+	aws cloudformation deploy \
+	  --capabilities CAPABILITY_IAM \
+	  --template-file $(REPO_DIR)/deploy/aws/ecs-service.yaml \
+	  --stack-name $(AWS_STACK_NAME) \
+	  --parameter-overrides AvailabilityZones=$(AWS_AVAILABILITY_ZONES) \
+	                        CreateNATGateways=false \
+							CreatePrivateSubnets=false \
+							Image=$(IMAGE_REG)/$(IMAGE_REPO):$(IMAGE_TAG)
+	@echo "### 🚀 App deployed & available here: http://`aws cloudformation describe-stacks --stack-name $(AWS_STACK_NAME) --query 'Stacks[0].Outputs[?OutputKey==\`AlbDnsUrl\`].OutputValue' --output text`"
 
 undeploy: ## 💀 Remove from AWS 
-	@echo "### 🚫 Not implemented yet"
-	@false
-#   @echo "### WARNING! Going to delete $(AWS_STACK_NAME) 😲"
+	@echo "### WARNING! Going to delete $(AWS_STACK_NAME) 😲"
+	aws cloudformation delete-stack --stack-name $(AWS_STACK_NAME)
+	aws cloudformation wait stack-delete-complete --stack-name $(AWS_STACK_NAME)
 
 test: $(FRONT_DIR)/node_modules ## 🎯 Unit tests for server and frontend 
 	cd $(SERVER_DIR); go test -v ./...
