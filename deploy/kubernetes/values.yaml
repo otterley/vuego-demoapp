@@ -4,14 +4,23 @@
 #
 
 image:
-  repository: ghcr.io/benc-uk/vuego-demoapp
+  repository: 523443631803.dkr.ecr.us-west-2.amazonaws.com/vuego-demoapp
   tag: latest
   pullPolicy: Always
 
 service:
   targetPort: 4000
-  # Use ClusterIP if you set up ingress
-  type: LoadBalancer
+  type: NodePort
+
+ingress:
+  enabled: true
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+  className: alb
+  tls:
+    enabled: false
+
 #
 # Create these secrets if you want to enable optional features, see secrets.sample.sh
 #
@@ -23,12 +32,3 @@ service:
 #     secretName: vuego-demoapp
 #     secretKey: AUTH_CLIENT_ID
 
-#
-# If you have an ingress controller set up
-#
-# ingress:
-#   enabled: true
-#   host: changeme.example.net
-#   tls:
-#     enabled: true
-#     secretName: changeme-cert-secret

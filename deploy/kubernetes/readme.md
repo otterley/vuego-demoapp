@@ -9,7 +9,8 @@ First add the Helm repo
 helm repo add benc-uk https://benc-uk.github.io/helm-charts
 ```
 
-Make a copy of `app.sample.yaml` to `myapp.yaml` and modify the values to suit your environment. If you're in a real hurry you can use the file as is and make no changes.
+Edit `values.yaml` and modify the values to suit your environment.
+
 ```bash
-helm install vuego-demoapp benc-uk/webapp --values myapp.yaml
+helm install vuego-demoapp benc-uk/webapp --values values.yaml
 ```
