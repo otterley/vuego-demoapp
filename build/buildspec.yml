@@ -1,0 +1,12 @@
+version: 0.2
+env:
+  shell: bash
+phases:
+  pre_build:
+    commands:
+      - aws ecr get-login-password | docker login -u AWS --password-stdin $IMAGE_REG
+  build:
+    on-failure: ABORT
+    commands:
+      - make image
+      - make push
