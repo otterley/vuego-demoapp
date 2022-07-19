@@ -5,9 +5,9 @@ Resources:
   VueGoDemoApp:
     Type: AWSSamples::CodePipeline::MultiarchECS::MODULE
     Properties:
-      RepositoryId: otterley/vuego-demoapp
+      SourceRepo: otterley/vuego-demoapp
       BranchName: master
-      ImageRepositoryName: vuego-demoapp
+      ImageRepository: !ImportValue vuego-demoapp-RepositoryUri
       CodeStarConnectionArn: arn:aws:codestar-connections:us-west-2:523443631803:connection/aafa4a94-2aed-40b0-a3bb-fc33d238a5f0
       BuildAndPushImageBuildspecPath: build/buildspec.yml
       BuildAndPushManifestBuildspecPath: build/buildspec-manifest.yml

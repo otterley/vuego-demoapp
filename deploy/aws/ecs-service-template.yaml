@@ -39,35 +39,17 @@ Parameters:
     Default: 10.0.0.0/19
     Description: CIDR block for private subnet 1A located in Availability Zone 1
     Type: String
-  PrivateSubnet1BCIDR:
-    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
-    Default: 10.0.192.0/21
-    Description: CIDR block for private subnet 1B with dedicated network ACL located in Availability Zone 1
-    Type: String
   PrivateSubnet2ACIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.32.0/19
     Description: CIDR block for private subnet 2A located in Availability Zone 2
     Type: String
-  PrivateSubnet2BCIDR:
-    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
-    Default: 10.0.200.0/21
-    Description: CIDR block for private subnet 2B with dedicated network ACL located in Availability Zone 2
-    Type: String
   PrivateSubnet3ACIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.64.0/19
     Description: CIDR block for private subnet 3A located in Availability Zone 3
-    Type: String
-  PrivateSubnet3BCIDR:
-    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
-    Default: 10.0.208.0/21
-    Description: CIDR block for private subnet 3B with dedicated network ACL located in Availability Zone 3
     Type: String
   PrivateSubnetATag1:
     AllowedPattern: ^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"'\[\]\{\}]*)?$
@@ -89,27 +71,6 @@ Parameters:
       tags must be in format "Key=Value" keys can only contain [a-zA-Z0-9+\-._:/@], values can contain [a-zA-Z0-9+\-._:/@ *\\"'\[\]\{\}]
     Default: ''
     Description: tag to add to private subnets A, in format Key=Value (Optional)
-    Type: String
-  PrivateSubnetBTag1:
-    AllowedPattern: ^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"'\[\]\{\}]*)?$
-    ConstraintDescription:
-      tags must be in format "Key=Value" keys can only contain [a-zA-Z0-9+\-._:/@], values can contain [a-zA-Z0-9+\-._:/@ *\\"'\[\]\{\}]
-    Default: Network=Private
-    Description: tag to add to private subnets B, in format Key=Value (Optional)
-    Type: String
-  PrivateSubnetBTag2:
-    AllowedPattern: ^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"'\[\]\{\}]*)?$
-    ConstraintDescription:
-      tags must be in format "Key=Value" keys can only contain [a-zA-Z0-9+\-._:/@], values can contain [a-zA-Z0-9+\-._:/@ *\\"'\[\]\{\}]
-    Default: ''
-    Description: tag to add to private subnets B, in format Key=Value (Optional)
-    Type: String
-  PrivateSubnetBTag3:
-    AllowedPattern: ^([a-zA-Z0-9+\-._:/@]+=[a-zA-Z0-9+\-.,_:/@ *\\"'\[\]\{\}]*)?$
-    ConstraintDescription:
-      tags must be in format "Key=Value" keys can only contain [a-zA-Z0-9+\-._:/@], values can contain [a-zA-Z0-9+\-._:/@ *\\"'\[\]\{\}]
-    Default: ''
-    Description: tag to add to private subnets B, in format Key=Value (Optional)
     Type: String
   PublicSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
@@ -156,6 +117,19 @@ Parameters:
     Default: 10.0.0.0/16
     Description: CIDR block for the VPC
     Type: String
+  ClusterName:
+    Type: String
+    Default: ''
+  ServiceName:
+    Type: String
+    Default: ''
+  CreateService:
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'true'
+    Description: Set to true to create the ECS service. Set this to false when initially setting up the cluster.
+    Type: String
   Image:
     Type: String
   DesiredCapacity:
@@ -173,15 +147,16 @@ Parameters:
     AllowedValues:
       - arm64
       - amd64
-  AmiIdAmd64: 
+  AmiIdAmd64:
     Description: AMI ID
     Default: '{{resolve:ssm:/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id:90}}'
     Type: String
-  AmiIdArm64: 
+  AmiIdArm64:
     Description: Arm64 AMI ID
     Default: '{{resolve:ssm:/aws/service/ecs/optimized-ami/amazon-linux-2/arm64/recommended/image_id:89}}'
     Type: String
-  
+
+
 Rules:
   NAT:
     RuleCondition: !Equals [!Ref CreateNATGateways, 'true']
@@ -221,14 +196,14 @@ Conditions:
   PrivateSubnetATag1Condition: !Not [!Equals [!Ref 'PrivateSubnetATag1', '']]
   PrivateSubnetATag2Condition: !Not [!Equals [!Ref 'PrivateSubnetATag2', '']]
   PrivateSubnetATag3Condition: !Not [!Equals [!Ref 'PrivateSubnetATag3', '']]
-  PrivateSubnetBTag1Condition: !Not [!Equals [!Ref 'PrivateSubnetBTag1', '']]
-  PrivateSubnetBTag2Condition: !Not [!Equals [!Ref 'PrivateSubnetBTag2', '']]
-  PrivateSubnetBTag3Condition: !Not [!Equals [!Ref 'PrivateSubnetBTag3', '']]
   PublicSubnetTag1Condition: !Not [!Equals [!Ref 'PublicSubnetTag1', '']]
   PublicSubnetTag2Condition: !Not [!Equals [!Ref 'PublicSubnetTag2', '']]
   PublicSubnetTag3Condition: !Not [!Equals [!Ref 'PublicSubnetTag3', '']]
   Arm64Condition: !Equals [!Ref CPUArchitecture, 'arm64']
-  Amd64Condition: !Equals [!Ref CPUArchitecture, 'amd64']
+  HasClusterNameCondition: !Not [!Equals [!Ref ClusterName, '']]
+  HasServiceNameCondition: !Not [!Equals [!Ref ServiceName, '']]
+  CreateServiceCondition: !Equals [!Ref CreateService, 'true']
+
 
 Mappings:
   ArchitectureToInstanceType:
@@ -606,9 +581,18 @@ Resources:
         - Key: Name
           Value: NATGateway3
 
-
-  ECSCluster:
+  ImageRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: vuego-demoapp
+  EcsCluster:
     Type: 'AWS::ECS::Cluster'
+    Properties:
+      ClusterName:
+        !If [HasClusterNameCondition, !Ref ClusterName, !Ref AWS::NoValue]
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
   EcsSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -641,7 +625,7 @@ Resources:
   CloudwatchLogsGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
-      LogGroupName: !Join 
+      LogGroupName: !Join
         - '-'
         - - ECSLogGroup
           - !Ref 'AWS::StackName'
@@ -649,7 +633,7 @@ Resources:
   TaskDefinition:
     Type: 'AWS::ECS::TaskDefinition'
     Properties:
-      Family: !Join 
+      Family: !Join
         - ''
         - - !Ref 'AWS::StackName'
           - '-vuego-demoapp'
@@ -691,7 +675,6 @@ Resources:
       Protocol: HTTP
   ECSALBListenerRule:
     Type: 'AWS::ElasticLoadBalancingV2::ListenerRule'
-    DependsOn: ALBListener
     Properties:
       Actions:
         - Type: forward
@@ -730,7 +713,7 @@ Resources:
         Timeout: PT15M
     UpdatePolicy:
       AutoScalingReplacingUpdate:
-        WillReplace: 'true'
+        WillReplace: true
   ContainerInstances:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
     Properties:
@@ -739,13 +722,13 @@ Resources:
         - !Ref EcsSecurityGroup
       InstanceType: !FindInMap [ArchitectureToInstanceType, !Ref CPUArchitecture, InstanceType]
       IamInstanceProfile: !Ref EC2InstanceProfile
-      UserData: !Base64 
+      UserData: !Base64
         'Fn::Join':
           - ''
           - - |
               #!/bin/bash -xe
             - echo ECS_CLUSTER=
-            - !Ref ECSCluster
+            - !Ref EcsCluster
             - |2
                >> /etc/ecs/ecs.config
             - |
@@ -761,8 +744,10 @@ Resources:
   Service:
     Type: 'AWS::ECS::Service'
     DependsOn: ALBListener
+    Condition: CreateServiceCondition
     Properties:
-      Cluster: !Ref ECSCluster
+      Cluster: !Ref EcsCluster
+      ServiceName: !If [HasServiceNameCondition, !Ref ServiceName, !Ref AWS::NoValue]
       DesiredCount: '1'
       LoadBalancers:
         - ContainerName: vuego-demoapp
@@ -836,15 +821,20 @@ Resources:
         - !Ref EC2Role
 
 Outputs:
+  ImageRepo:
+    Value: !GetAtt ImageRepo.RepositoryUri
+    Export:
+      Name: !Sub '${AWS::StackName}-RepositoryUri'
   Service:
+    Condition: CreateServiceCondition
     Value: !Ref Service
   Cluster:
-    Value: !Ref ECSCluster
+    Value: !Ref EcsCluster
   AlbDnsUrl:
     Description: Your ALB DNS URL
-    Value: !Join 
+    Value: !Join
       - ''
-      - - !GetAtt 
+      - - !GetAtt
           - ECSALB
           - DNSName
   TaskDefinition:
@@ -920,7 +910,7 @@ Outputs:
     Value: !Ref 'PrivateSubnet2ARouteTable'
     Description: Private subnet 2A route table
     Export:
-      Name: !Sub '${AWS::StackName}-PrivateSubnet2ARouteTable'  
+      Name: !Sub '${AWS::StackName}-PrivateSubnet2ARouteTable'
   PrivateSubnet3ACIDR:
     Condition: PrivateSubnets&3AZCondition
     Description: Private subnet 3A CIDR in Availability Zone 3

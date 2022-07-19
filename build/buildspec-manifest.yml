@@ -4,7 +4,7 @@ env:
 phases:
   pre_build:
     commands:
-      - aws ecr get-login-password | docker login -u AWS --password-stdin $IMAGE_REG
+      - aws ecr get-login-password | docker login -u AWS --password-stdin ${IMAGE_REPO%%/*}
   build:
     on-failure: ABORT
     commands:
