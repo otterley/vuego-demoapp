@@ -130,8 +130,9 @@ Parameters:
     Default: 'true'
     Description: Set to true to create the ECS service. Set this to false when initially setting up the cluster.
     Type: String
-  Image:
+  ImageTag:
     Type: String
+    Default: 'latest'
   DesiredCapacity:
     Type: Number
     Default: '1'
@@ -641,7 +642,7 @@ Resources:
         - Name: vuego-demoapp
           Cpu: '10'
           Essential: 'true'
-          Image: !Ref Image
+          Image: !Join [':', [!GetAtt ImageRepo.RepositoryUri, !Ref ImageTag]]
           Memory: '300'
           LogConfiguration:
             LogDriver: awslogs
